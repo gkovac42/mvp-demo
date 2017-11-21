@@ -1,8 +1,8 @@
 package com.example.goran.mvpdemo.articles.list;
 
 import com.example.goran.mvpdemo.data.Article;
-import com.example.goran.mvpdemo.data.remote.ArticleInteractor;
-import com.example.goran.mvpdemo.data.remote.RemoteInteractor;
+import com.example.goran.mvpdemo.data.DataInteractor;
+import com.example.goran.mvpdemo.data.Interactor;
 
 import java.util.ArrayList;
 
@@ -10,40 +10,59 @@ import java.util.ArrayList;
  * Created by Goran on 17.11.2017..
  */
 
-public class ListPresenter implements ListContract.Presenter {
-
+public class ListPresenter implements ListContract.Presenter, DataInteractor.Listener {
 
     private ListContract.View view;
-    private RemoteInteractor remoteInteractor;
+    private Interactor dataInteractor;
     private ArrayList<Article> articles;
 
-    public ListPresenter(ListContract.View view) {
+    public ListPresenter(ListContract.View view, Interactor interactor) {
         this.view = view;
-        remoteInteractor = new ArticleInteractor(this);
+        this.dataInteractor = interactor;
+        this.dataInteractor.setListener(ListPresenter.this);
     }
 
 
     @Override
     public void getArticleData() {
 
-        remoteInteractor.startDownload();
+        if (dataInteractor.timeToUpdate()) {
 
-        //TODO get local data
+            dataInteractor.getRemoteData();
+
+        } else {
+
+            articles = dataInteractor.getLocalData();
+
+            view.showArticleList(articles);
+        }
     }
 
     @Override
-    public void onDownloadComplete() {
+    public void onRemoteDataReady(ArrayList<Article> articles) {
 
-        articles = remoteInteractor.getArticles();
+        this.articles = articles;
 
-        // TODO save article data
+        if (articles != null && articles.size() != 0) {
 
-        view.showArticleList(articles);
+            dataInteractor.saveData(articles);
+
+            view.showArticleList(articles);
+
+        } else {
+
+            view.showErrorDialog();
+        }
     }
 
     @Override
     public void onArticleClick(int position) {
 
         view.navigateToArticle(position, articles);
+    }
+
+    @Override
+    public void onDestroyPresenter() {
+        dataInteractor.setListener(null);
     }
 }

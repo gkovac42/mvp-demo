@@ -23,15 +23,22 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
     private static final String START_DELIMITER = "introduction\">";
     private static final String END_DELIMITER = "Related Topics<";
 
-    private RemoteInteractor remoteInteractor;
+    private Listener listener;
 
-    public NetworkTask(RemoteInteractor remoteInteractor) {
-        this.remoteInteractor = remoteInteractor;
+    public interface Listener {
+
+        void onTaskComplete(ArrayList<Article> articles);
+    }
+
+    public NetworkTask(Listener listener) {
+        this.listener = listener;
     }
 
     @SafeVarargs
     @Override
     protected final ArrayList<Article> doInBackground(ArrayList<Article>... articles) {
+
+        // retrofit related stuff
 
         Call<ArticleResponse> apiCall = ArticleRequest.initApiCall();
 
@@ -41,41 +48,38 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
 
             articles[0] = response.body().getArticles();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
 
-        // parseArticleContent article content from url
+            // parse article content from url
 
-        InputStream in = null;
+            InputStream in = null;
 
-        for (Article article : articles[0]) {
-            try {
-                // get HTML from URL
-                in = new URL(article.getUrl()).openStream();
-                String html = new Scanner(in, "UTF-8").useDelimiter("\\A").next();
+            for (Article article : articles[0]) {
+                try {
+                    // get HTML from URL
+                    in = new URL(article.getUrl()).openStream();
+                    String html = new Scanner(in, "UTF-8").useDelimiter("\\A").next();
 
-                // split HTML to get article content
-                String[] splitHeader = html.split(START_DELIMITER);
-                String[] splitFooter = splitHeader[1].split(END_DELIMITER);
+                    // split HTML to get article content
+                    String[] splitHeader = html.split(START_DELIMITER);
+                    String[] splitFooter = splitHeader[1].split(END_DELIMITER);
 
-                // remove HTML tags
-                String result = Html.fromHtml(splitFooter[0]).toString();
+                    // remove HTML tags
+                    String result = Html.fromHtml(splitFooter[0]).toString();
 
-                article.setContent(result);
+                    article.setContent(result);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                article.setContent("Parsiranje sadržaja nije uspjelo.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    article.setContent("Parsiranje sadržaja nije uspjelo.");
+                }
             }
-        }
-        try {
+
             if (in != null) {
                 in.close();
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
 
         return articles[0];
@@ -85,7 +89,8 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
     protected void onPostExecute(ArrayList<Article> result) {
         super.onPostExecute(result);
 
-        remoteInteractor.setArticles(result);
-
+        if (listener != null) {
+            listener.onTaskComplete(result);
+        }
     }
 }

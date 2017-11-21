@@ -24,11 +24,9 @@ public interface ListContract {
 
         void getArticleData();
 
-        void onDownloadComplete();
-
         void onArticleClick(int position);
 
+        void onDestroyPresenter();
 
     }
-
 }

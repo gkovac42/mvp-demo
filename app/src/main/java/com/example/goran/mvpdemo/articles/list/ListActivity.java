@@ -13,6 +13,8 @@ import android.widget.ProgressBar;
 import com.example.goran.mvpdemo.R;
 import com.example.goran.mvpdemo.articles.single.ArticleActivity;
 import com.example.goran.mvpdemo.data.Article;
+import com.example.goran.mvpdemo.data.DataInteractor;
+import com.example.goran.mvpdemo.data.Interactor;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
@@ -30,7 +32,9 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
         progressBar = findViewById(R.id.main_progress_bar);
 
-        presenter = new ListPresenter(ListActivity.this);
+        Interactor dataInteractor = DataInteractor.getInstance(getApplicationContext());
+
+        presenter = new ListPresenter(ListActivity.this, dataInteractor);
 
         presenter.getArticleData();
     }
@@ -83,5 +87,11 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
         dlgError.show();
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.onDestroyPresenter();
+        super.onDestroy();
     }
 }
