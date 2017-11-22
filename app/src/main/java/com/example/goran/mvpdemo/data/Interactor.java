@@ -8,13 +8,13 @@ import java.util.ArrayList;
 
 public interface Interactor {
 
-    void getRemoteData();
+    void getRemoteData(DataInteractor.Listener listener);
 
     ArrayList<Article> getLocalData();
 
     void saveData(ArrayList<Article> articles);
 
-    void setListener(DataInteractor.Listener listener);
+    void removeListener();
 
     boolean timeToUpdate();
 

@@ -27,8 +27,8 @@ public class DataInteractor implements Interactor, NetworkTask.Listener {
     private Listener listener;
 
     @Override
-    public void setListener(Listener listener) {
-        this.listener = listener;
+    public void removeListener() {
+        this.listener = null;
     }
 
     public interface Listener {
@@ -37,7 +37,9 @@ public class DataInteractor implements Interactor, NetworkTask.Listener {
 
 
     @Override
-    public void getRemoteData() {
+    public void getRemoteData(DataInteractor.Listener listener) {
+
+        this.listener = listener;
 
         ArrayList<Article> articles = new ArrayList<>();
 

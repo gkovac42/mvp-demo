@@ -33,8 +33,6 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
         initUI();
 
-        showErrorDialog();
-
         Interactor dataInteractor = new DataInteractor(this.getApplicationContext());
 
         presenter = new ListPresenter(ListActivity.this, dataInteractor);
