@@ -62,6 +62,6 @@ public class ListPresenter implements ListContract.Presenter {
 
     @Override
     public void onDestroyPresenter() {
-        dataInteractor.removeListener();
+        dataInteractor.cancelRemoteDataTask();
     }
 }

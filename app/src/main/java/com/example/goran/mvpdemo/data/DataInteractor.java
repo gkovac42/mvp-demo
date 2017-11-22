@@ -1,6 +1,7 @@
 package com.example.goran.mvpdemo.data;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.example.goran.mvpdemo.data.local.DatabaseHelper;
 import com.example.goran.mvpdemo.data.local.SharedPrefsHelper;
@@ -27,7 +28,11 @@ public class DataInteractor implements Interactor, NetworkTask.Listener {
     private Listener listener;
 
     @Override
-    public void removeListener() {
+    public void cancelRemoteDataTask() {
+
+        if (networkTask.getStatus() != AsyncTask.Status.FINISHED) {
+            networkTask.cancel(true);
+        }
         this.listener = null;
     }
 

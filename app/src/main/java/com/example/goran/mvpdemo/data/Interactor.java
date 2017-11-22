@@ -14,7 +14,7 @@ public interface Interactor {
 
     void saveData(ArrayList<Article> articles);
 
-    void removeListener();
+    void cancelRemoteDataTask();
 
     boolean timeToUpdate();
 

@@ -33,12 +33,13 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
         initUI();
 
-        Interactor dataInteractor = new DataInteractor(this.getApplicationContext());
+        Interactor dataInteractor = new DataInteractor(getApplicationContext());
 
-        presenter = new ListPresenter(ListActivity.this, dataInteractor);
+        presenter = new ListPresenter(this, dataInteractor);
 
         presenter.getArticleData();
     }
+
 
     public void initUI() {
 
@@ -69,7 +70,7 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
     @Override
     public void navigateToArticle(int position, ArrayList<Article> articleData) {
 
-        Intent intent = new Intent(getApplicationContext(), ArticleActivity.class);
+        Intent intent = new Intent(ListActivity.this, ArticleActivity.class);
         intent.putExtra("position", position);
         intent.putParcelableArrayListExtra("articles", articleData);
         startActivity(intent);
