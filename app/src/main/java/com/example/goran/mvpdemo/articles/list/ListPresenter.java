@@ -34,7 +34,7 @@ public class ListPresenter implements ListContract.Presenter, DataInteractor.Lis
 
             articles = dataInteractor.getLocalData();
 
-            view.showArticleList(articles);
+            view.updateList(articles);
         }
     }
 
@@ -47,7 +47,7 @@ public class ListPresenter implements ListContract.Presenter, DataInteractor.Lis
 
             dataInteractor.saveData(articles);
 
-            view.showArticleList(articles);
+            view.updateList(articles);
 
         } else {
 

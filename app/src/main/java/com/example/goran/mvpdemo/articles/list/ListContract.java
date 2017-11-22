@@ -12,9 +12,9 @@ public interface ListContract {
 
     interface View {
 
-        void showArticleList(ArrayList<Article> articles);
+        void updateList(ArrayList<Article> articles);
 
-        void navigateToArticle(int position, ArrayList<Article> articleData);
+        void navigateToArticle(int position, ArrayList<Article> articles);
 
         void showErrorDialog();
 

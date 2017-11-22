@@ -2,15 +2,15 @@ package com.example.goran.mvpdemo.articles.list;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.example.goran.mvpdemo.R;
+import com.example.goran.mvpdemo.articles.dialog.ErrorDialogFragment;
 import com.example.goran.mvpdemo.articles.single.ArticleActivity;
 import com.example.goran.mvpdemo.data.Article;
 import com.example.goran.mvpdemo.data.DataInteractor;
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class ListActivity extends AppCompatActivity implements ListContract.View {
 
     private ProgressBar progressBar;
+    private ListAdapter adapter;
     private ListPresenter presenter;
 
     @Override
@@ -30,19 +31,22 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
         Fresco.initialize(this);
         setContentView(R.layout.activity_main);
 
-        progressBar = findViewById(R.id.main_progress_bar);
+        initUI();
 
-        Interactor dataInteractor = DataInteractor.getInstance(getApplicationContext());
+        showErrorDialog();
+
+        Interactor dataInteractor = new DataInteractor(this.getApplicationContext());
 
         presenter = new ListPresenter(ListActivity.this, dataInteractor);
 
         presenter.getArticleData();
     }
 
-    @Override
-    public void showArticleList(ArrayList<Article> articles) {
+    public void initUI() {
 
-        ListAdapter adapter = new ListAdapter(articles);
+        progressBar = findViewById(R.id.main_progress_bar);
+
+        adapter = new ListAdapter();
         adapter.setListener(new ListAdapter.ItemClickListener() {
             @Override
             public void onClick(int position) {
@@ -54,6 +58,12 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
         recyclerView.setAdapter(adapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+    }
+
+    @Override
+    public void updateList(ArrayList<Article> articles) {
+
+        adapter.setDataSource(articles);
 
         progressBar.setVisibility(View.GONE);
     }
@@ -70,22 +80,11 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
     @Override
     public void showErrorDialog() {
 
-        View dialogView = this.getLayoutInflater().inflate(R.layout.dialog_error, null);
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setView(dialogView);
+        ErrorDialogFragment newFragment = ErrorDialogFragment.newInstance();
+        newFragment.show(fragmentManager, null);
 
-        final AlertDialog dlgError = builder.create();
-
-        Button btnDialog = dialogView.findViewById(R.id.btn_dialog);
-        btnDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dlgError.dismiss();
-            }
-        });
-
-        dlgError.show();
         progressBar.setVisibility(View.GONE);
     }
 

@@ -23,17 +23,20 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private ArrayList<Article> articles;
     private ItemClickListener listener;
 
+    public  ListAdapter() {
+        this.articles = new ArrayList<>();
+    }
+
+    public void setDataSource(ArrayList<Article> articles) {
+        this.articles = articles;
+    }
+
     public interface ItemClickListener {
         void onClick(int position);
     }
 
     public void setListener(ItemClickListener listener) {
         this.listener = listener;
-    }
-
-
-    public ListAdapter(ArrayList<Article> articles) {
-        this.articles = articles;
     }
 
     @Override

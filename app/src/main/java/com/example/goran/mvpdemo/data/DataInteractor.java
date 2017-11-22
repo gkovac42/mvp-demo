@@ -16,25 +16,12 @@ public class DataInteractor implements Interactor, NetworkTask.Listener {
 
     private DatabaseHelper dbHelper;
     private SharedPrefsHelper spHelper;
-    private ArrayList<Article> articles;
     private NetworkTask networkTask;
 
-    private static DataInteractor instance = null;
-
-    public static DataInteractor getInstance(Context context) {
-        if (instance == null) {
-            instance = new DataInteractor(
-                    DatabaseHelper.getInstance(context),
-                    SharedPrefsHelper.getInstance(context));
-        }
-        return instance;
-    }
-
-    private DataInteractor(DatabaseHelper dbHelper, SharedPrefsHelper spHelper) {
-        this.dbHelper = dbHelper;
-        this.spHelper = spHelper;
+    public DataInteractor(Context context) {
+        this.dbHelper = DatabaseHelper.getInstance(context);
+        this.spHelper = SharedPrefsHelper.getInstance(context);
         networkTask = new NetworkTask(DataInteractor.this);
-
     }
 
     private Listener listener;
@@ -52,7 +39,7 @@ public class DataInteractor implements Interactor, NetworkTask.Listener {
     @Override
     public void getRemoteData() {
 
-        articles = new ArrayList<>();
+        ArrayList<Article> articles = new ArrayList<>();
 
         networkTask.execute(articles);
     }
