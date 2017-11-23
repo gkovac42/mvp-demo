@@ -41,7 +41,7 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
         Call<ArticleResponse> apiCall = ArticleRequest.initApiCall();
 
         try {
-            
+
             Response<ArticleResponse> apiResponse = apiCall.execute();
 
             articles[0] = apiResponse.body().getArticles();
@@ -58,11 +58,11 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
                     okhttp3.Response urlResponse = client.newCall(request).execute();
 
                     // split HTML to get article content
-                    String[] splitHeader = urlResponse.body().string().split(START_DELIMITER);
-                    String[] splitFooter = splitHeader[1].split(END_DELIMITER);
+                    String splitHeader = urlResponse.body().string().split(START_DELIMITER)[1];
+                    String splitFooter = splitHeader.split(END_DELIMITER)[0];
 
                     // remove HTML tags
-                    article.setContent(Html.fromHtml(splitFooter[0]).toString());
+                    article.setContent(Html.fromHtml(splitFooter).toString());
 
                 } catch (Exception e) {
                     e.printStackTrace();
