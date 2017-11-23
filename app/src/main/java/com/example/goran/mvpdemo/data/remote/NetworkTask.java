@@ -6,11 +6,10 @@ import android.text.Html;
 import com.example.goran.mvpdemo.data.Article;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Scanner;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -39,34 +38,31 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
     protected final ArrayList<Article> doInBackground(ArrayList<Article>... articles) {
 
         // retrofit related stuff
-
         Call<ArticleResponse> apiCall = ArticleRequest.initApiCall();
 
         try {
+            
+            Response<ArticleResponse> apiResponse = apiCall.execute();
 
-            Response<ArticleResponse> response = apiCall.execute();
-
-            articles[0] = response.body().getArticles();
-
+            articles[0] = apiResponse.body().getArticles();
 
             // parse article content from url
-
-            InputStream in = null;
-
             for (Article article : articles[0]) {
                 try {
                     // get HTML from URL
-                    in = new URL(article.getUrl()).openStream();
-                    String html = new Scanner(in, "UTF-8").useDelimiter("\\A").next();
+                    OkHttpClient client = new OkHttpClient();
+                    Request request = new Request.Builder()
+                            .url(article.getUrl())
+                            .build();
+
+                    okhttp3.Response urlResponse = client.newCall(request).execute();
 
                     // split HTML to get article content
-                    String[] splitHeader = html.split(START_DELIMITER);
+                    String[] splitHeader = urlResponse.body().string().split(START_DELIMITER);
                     String[] splitFooter = splitHeader[1].split(END_DELIMITER);
 
                     // remove HTML tags
-                    String result = Html.fromHtml(splitFooter[0]).toString();
-
-                    article.setContent(result);
+                    article.setContent(Html.fromHtml(splitFooter[0]).toString());
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -74,9 +70,6 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
                 }
             }
 
-            if (in != null) {
-                in.close();
-            }
         } catch (IOException e) {
             e.printStackTrace();
             return null;
