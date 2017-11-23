@@ -8,14 +8,20 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.goran.mvpdemo.R;
 import com.example.goran.mvpdemo.data.Article;
+import com.example.goran.mvpdemo.data.DataInteractor;
+import com.example.goran.mvpdemo.data.Interactor;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
 
 
-public class ArticleActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class ArticleActivity extends AppCompatActivity implements ArticleContract.View, ViewPager.OnPageChangeListener {
 
-    private ArrayList<Article> articles;
+    private ActionBar actionBar;
+    private ArticlePagerAdapter adapter;
+    private ViewPager viewPager;
+    private ArticleContract.Presenter presenter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,29 +29,47 @@ public class ArticleActivity extends AppCompatActivity implements ViewPager.OnPa
         Fresco.initialize(this);
         setContentView(R.layout.activity_reader);
 
-        // get articles data and position from main activity
+        initUI();
+
+        Interactor dataInteractor = new DataInteractor(getApplicationContext());
+
+        presenter = new ArticlePresenter(this, dataInteractor);
+
+        updateArticles(presenter.getArticleData());
+
+    }
+
+    private void initUI() {
+
+        actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        adapter = new ArticlePagerAdapter(getSupportFragmentManager());
+
+        viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(this);
+
+    }
+
+    @Override
+    public void updateArticles(ArrayList<Article> articles) {
+
+        adapter.setDataSource(articles);
+        adapter.notifyDataSetChanged();
+
         Intent intent = getIntent();
         int position = intent.getIntExtra("position", 0);
-        articles = intent.getParcelableArrayListExtra("articles");
 
-        // init pager adapter
-        ArticlePagerAdapter articlePagerAdapter = new ArticlePagerAdapter(getSupportFragmentManager(), articles);
-
-        // init view pager
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(articlePagerAdapter);
-        viewPager.addOnPageChangeListener(this);
-        viewPager.setCurrentItem(position);
-
-        // set action bar back button and title
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(articles.get(position).getTitle());
+        viewPager.setCurrentItem(position);
     }
 
     @Override
     public void onPageSelected(int position) {
-        getSupportActionBar().setTitle(articles.get(position).getTitle());
+        getSupportActionBar().setTitle(adapter.getArticles().get(position).getTitle());
     }
 
     @Override

@@ -23,7 +23,7 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
     private ProgressBar progressBar;
     private ListAdapter adapter;
-    private ListPresenter presenter;
+    private ListContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
     }
 
     @Override
-    public void updateList(ArrayList<Article> articles) {
+    public void updateArticles(ArrayList<Article> articles) {
 
         adapter.setDataSource(articles);
 
@@ -72,7 +72,6 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
         Intent intent = new Intent(ListActivity.this, ArticleActivity.class);
         intent.putExtra("position", position);
-        intent.putParcelableArrayListExtra("articles", articleData);
         startActivity(intent);
     }
 

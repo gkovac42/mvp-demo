@@ -16,8 +16,16 @@ public class ArticlePagerAdapter extends FragmentPagerAdapter {
 
     private ArrayList<Article> articles;
 
-    public ArticlePagerAdapter(FragmentManager fm, ArrayList<Article> articles) {
+    public ArticlePagerAdapter(FragmentManager fm) {
         super(fm);
+        articles = new ArrayList<>();
+    }
+
+    public ArrayList<Article> getArticles() {
+        return this.articles;
+    }
+
+    public void setDataSource(ArrayList<Article> articles) {
         this.articles = articles;
     }
 

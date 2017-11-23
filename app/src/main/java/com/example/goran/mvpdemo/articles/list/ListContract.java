@@ -12,7 +12,7 @@ public interface ListContract {
 
     interface View {
 
-        void updateList(ArrayList<Article> articles);
+        void updateArticles(ArrayList<Article> articles);
 
         void navigateToArticle(int position, ArrayList<Article> articles);
 

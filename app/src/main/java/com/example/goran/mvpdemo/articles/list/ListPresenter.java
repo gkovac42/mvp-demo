@@ -37,7 +37,7 @@ public class ListPresenter implements ListContract.Presenter {
 
                         dataInteractor.saveData(articles);
 
-                        view.updateList(articles);
+                        view.updateArticles(articles);
 
                     } else {
 
@@ -50,7 +50,7 @@ public class ListPresenter implements ListContract.Presenter {
 
             articles = dataInteractor.getLocalData();
 
-            view.updateList(articles);
+            view.updateArticles(articles);
         }
     }
 
