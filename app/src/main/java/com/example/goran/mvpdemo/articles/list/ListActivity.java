@@ -2,7 +2,6 @@ package com.example.goran.mvpdemo.articles.list;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +35,8 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
         Interactor dataInteractor = new DataInteractor(getApplicationContext());
 
         presenter = new ListPresenter(this, dataInteractor);
+
+        showErrorDialog();
 
         presenter.getArticleData();
     }
@@ -78,10 +79,8 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
     @Override
     public void showErrorDialog() {
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
         ErrorDialogFragment newFragment = ErrorDialogFragment.newInstance();
-        newFragment.show(fragmentManager, null);
+        newFragment.show(getSupportFragmentManager(), null);
 
         progressBar.setVisibility(View.GONE);
     }

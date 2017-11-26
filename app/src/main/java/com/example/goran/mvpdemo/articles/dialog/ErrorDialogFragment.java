@@ -1,13 +1,11 @@
 package com.example.goran.mvpdemo.articles.dialog;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-
-import com.example.goran.mvpdemo.R;
+import android.support.v7.app.AlertDialog;
 
 /**
  * Created by Goran on 22.11.2017..
@@ -20,19 +18,21 @@ public class ErrorDialogFragment extends DialogFragment {
         return new ErrorDialogFragment();
     }
 
+    @NonNull
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.dialog_error, container, false);
+        return new AlertDialog.Builder(getActivity())
+                .setTitle("Greška")
+                .setMessage("Ups, došlo je do pogreške.")
+                .setPositiveButton("U redu", new DialogInterface.OnClickListener() {
 
-        Button btnDialog = v.findViewById(R.id.btn_dialog);
-        btnDialog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-            }
-        });
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dismiss();
+                    }
+                })
 
-        return v;
+                .create();
     }
 }
