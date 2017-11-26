@@ -13,10 +13,14 @@ public interface ArticleContract {
     interface View {
 
         void updateArticles(ArrayList<Article> articles);
+
+        void updateTitle(String title);
     }
 
     interface Presenter {
 
-        ArrayList<Article> getArticleData();
+        void getArticleData();
+
+        void onArticleSelected(int position);
     }
 }

@@ -36,8 +36,6 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
         presenter = new ListPresenter(this, dataInteractor);
 
-        showErrorDialog();
-
         presenter.getArticleData();
     }
 

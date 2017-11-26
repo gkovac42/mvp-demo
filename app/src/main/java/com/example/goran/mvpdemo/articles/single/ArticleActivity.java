@@ -35,7 +35,7 @@ public class ArticleActivity extends AppCompatActivity implements ArticleContrac
 
         presenter = new ArticlePresenter(this, dataInteractor);
 
-        updateArticles(presenter.getArticleData());
+        presenter.getArticleData();
 
     }
 
@@ -68,8 +68,13 @@ public class ArticleActivity extends AppCompatActivity implements ArticleContrac
     }
 
     @Override
+    public void updateTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    @Override
     public void onPageSelected(int position) {
-        getSupportActionBar().setTitle(adapter.getArticles().get(position).getTitle());
+        presenter.onArticleSelected(position);
     }
 
     @Override
