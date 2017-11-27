@@ -2,7 +2,6 @@ package com.example.goran.mvpdemo.articles.list;
 
 import com.example.goran.mvpdemo.data.Article;
 import com.example.goran.mvpdemo.data.Interactor;
-import com.example.goran.mvpdemo.data.remote.NetworkTask;
 
 import java.util.ArrayList;
 
@@ -10,11 +9,10 @@ import java.util.ArrayList;
  * Created by Goran on 17.11.2017..
  */
 
-public class ListPresenter implements ListContract.Presenter, NetworkTask.Listener {
+public class ListPresenter implements ListContract.Presenter, Interactor.DataListener {
 
     private ListContract.View view;
     private Interactor dataInteractor;
-    private ArrayList<Article> articles;
 
     public ListPresenter(ListContract.View view, Interactor interactor) {
         this.view = view;
@@ -25,12 +23,7 @@ public class ListPresenter implements ListContract.Presenter, NetworkTask.Listen
     @Override
     public void getArticleData() {
 
-        articles = dataInteractor.getData(this);
-
-        if (articles != null) {
-
-            view.updateArticles(articles);
-        }
+        dataInteractor.getData(this);
     }
 
     @Override
@@ -39,8 +32,6 @@ public class ListPresenter implements ListContract.Presenter, NetworkTask.Listen
         if (articles != null) {
 
             view.updateArticles(articles);
-
-            dataInteractor.saveData(articles);
 
         } else {
 
@@ -51,11 +42,11 @@ public class ListPresenter implements ListContract.Presenter, NetworkTask.Listen
     @Override
     public void onArticleClick(int position) {
 
-        view.navigateToArticle(position, articles);
+        view.navigateToArticle(position);
     }
 
     @Override
     public void onDestroyPresenter() {
-        dataInteractor.cancelRemoteDataTask();
+        dataInteractor.cancelDataTask();
     }
 }

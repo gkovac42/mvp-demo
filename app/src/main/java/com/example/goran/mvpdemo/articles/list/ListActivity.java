@@ -67,7 +67,7 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
     }
 
     @Override
-    public void navigateToArticle(int position, ArrayList<Article> articleData) {
+    public void navigateToArticle(int position) {
 
         Intent intent = new Intent(ListActivity.this, ArticleActivity.class);
         intent.putExtra("position", position);

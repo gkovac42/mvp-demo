@@ -14,7 +14,7 @@ public interface ListContract {
 
         void updateArticles(ArrayList<Article> articles);
 
-        void navigateToArticle(int position, ArrayList<Article> articles);
+        void navigateToArticle(int position);
 
         void showErrorDialog();
 

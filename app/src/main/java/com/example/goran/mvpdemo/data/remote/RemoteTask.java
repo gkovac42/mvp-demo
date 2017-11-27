@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.text.Html;
 
 import com.example.goran.mvpdemo.data.Article;
+import com.example.goran.mvpdemo.data.Interactor;
+import com.example.goran.mvpdemo.data.local.DatabaseHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,19 +19,16 @@ import retrofit2.Response;
  * Created by Goran on 20.11.2017..
  */
 
-public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<Article>> {
+public class RemoteTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<Article>> {
 
     private static final String START_DELIMITER = "introduction\">";
     private static final String END_DELIMITER = "Related Topics<";
 
-    private Listener listener;
+    private DatabaseHelper dbHelper;
+    private Interactor.DataListener listener;
 
-    public interface Listener {
-
-        void onDataReady(ArrayList<Article> articles);
-    }
-
-    public NetworkTask(Listener listener) {
+    public RemoteTask(DatabaseHelper dbHelper, Interactor.DataListener listener) {
+        this.dbHelper = dbHelper;
         this.listener = listener;
     }
 
@@ -88,9 +87,12 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
     protected void onPostExecute(ArrayList<Article> result) {
         super.onPostExecute(result);
 
+
         if (listener != null) {
             listener.onDataReady(result);
         }
+
+        dbHelper.insertArticles(result);
     }
 
 

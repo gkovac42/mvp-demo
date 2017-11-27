@@ -4,8 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.example.goran.mvpdemo.data.local.DatabaseHelper;
+import com.example.goran.mvpdemo.data.local.LocalTask;
 import com.example.goran.mvpdemo.data.local.SharedPrefsHelper;
-import com.example.goran.mvpdemo.data.remote.NetworkTask;
+import com.example.goran.mvpdemo.data.remote.RemoteTask;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,8 @@ public class DataInteractor implements Interactor {
 
     private DatabaseHelper dbHelper;
     private SharedPrefsHelper spHelper;
-    private NetworkTask networkTask;
+    private LocalTask localTask;
+    private RemoteTask remoteTask;
 
     public DataInteractor(Context context) {
         this.dbHelper = DatabaseHelper.getInstance(context);
@@ -26,50 +28,52 @@ public class DataInteractor implements Interactor {
     }
 
     @Override
-    public ArrayList<Article> getData(NetworkTask.Listener listener) {
+    public void getData(DataListener listener) {
 
         if (timeToUpdate()) {
 
-            networkTask = new NetworkTask(listener);
+            remoteTask = new RemoteTask(dbHelper, listener);
+            spHelper.setLastUpdateTime();
             getRemoteData();
-            return null;
 
         } else {
-
-            return getLocalData();
+            localTask = new LocalTask(dbHelper, listener);
+            getLocalData();
         }
     }
 
-    @Override
-    public void getRemoteData() {
+    private void getRemoteData() {
 
         ArrayList<Article> articles = new ArrayList<>();
 
-        networkTask.execute(articles);
+        remoteTask.execute(articles);
+    }
+
+    private void getLocalData() {
+
+        ArrayList<Article> articles = new ArrayList<>();
+
+        localTask.execute(articles);
+
     }
 
     @Override
-    public ArrayList<Article> getLocalData() {
+    public void cancelDataTask() {
 
-        return dbHelper.getArticles();
-    }
+        if (remoteTask != null) {
+            remoteTask.removeListener();
 
-    @Override
-    public void saveData(ArrayList<Article> articles) {
+            if (remoteTask.getStatus() != AsyncTask.Status.FINISHED) {
+                remoteTask.cancel(true);
+            }
 
-        dbHelper.clearDatabase();
-        dbHelper.insertArticles(articles);
-        spHelper.setLastUpdateTime();
-    }
+        } else if (localTask != null) {
+            localTask.removeListener();
 
-    @Override
-    public void cancelRemoteDataTask() {
-
-        if (networkTask.getStatus() != AsyncTask.Status.FINISHED) {
-            networkTask.cancel(true);
+            if (localTask.getStatus() != AsyncTask.Status.FINISHED) {
+                localTask.cancel(true);
+            }
         }
-
-        networkTask.removeListener();
     }
 
     @Override

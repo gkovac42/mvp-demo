@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Created by Goran on 17.11.2017..
  */
 
-public class ArticlePresenter implements ArticleContract.Presenter {
+public class ArticlePresenter implements ArticleContract.Presenter, Interactor.DataListener {
 
     private ArticleContract.View view;
     private Interactor dataInteractor;
@@ -23,13 +23,20 @@ public class ArticlePresenter implements ArticleContract.Presenter {
     @Override
     public void getArticleData() {
 
-        articles = dataInteractor.getLocalData();
+        dataInteractor.getData(this);
+    }
+
+    @Override
+    public void onDataReady(ArrayList<Article> articles) {
+
+        this.articles = articles;
 
         view.updateArticles(articles);
     }
 
     @Override
     public void onArticleSelected(int position) {
+
         view.updateTitle(articles.get(position).getTitle());
     }
 }
