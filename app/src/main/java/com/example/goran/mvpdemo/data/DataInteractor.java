@@ -26,14 +26,6 @@ public class DataInteractor implements Interactor {
     }
 
     @Override
-    public void cancelRemoteDataTask() {
-
-        if (networkTask.getStatus() != AsyncTask.Status.FINISHED) {
-            networkTask.cancel(true);
-        }
-    }
-
-    @Override
     public ArrayList<Article> getData(NetworkTask.Listener listener) {
 
         if (timeToUpdate()) {
@@ -68,6 +60,16 @@ public class DataInteractor implements Interactor {
         dbHelper.clearDatabase();
         dbHelper.insertArticles(articles);
         spHelper.setLastUpdateTime();
+    }
+
+    @Override
+    public void cancelRemoteDataTask() {
+
+        if (networkTask.getStatus() != AsyncTask.Status.FINISHED) {
+            networkTask.cancel(true);
+        }
+
+        networkTask.removeListener();
     }
 
     @Override

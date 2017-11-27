@@ -33,6 +33,12 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
         this.listener = listener;
     }
 
+    public void removeListener() {
+        if (this.listener != null) {
+            this.listener = null;
+        }
+    }
+
     @SafeVarargs
     @Override
     protected final ArrayList<Article> doInBackground(ArrayList<Article>... articles) {
@@ -86,4 +92,6 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
             listener.onDataReady(result);
         }
     }
+
+
 }
