@@ -26,7 +26,7 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
 
     public interface Listener {
 
-        void onTaskComplete(ArrayList<Article> articles);
+        void onDataReady(ArrayList<Article> articles);
     }
 
     public NetworkTask(Listener listener) {
@@ -83,7 +83,7 @@ public class NetworkTask extends AsyncTask<ArrayList<Article>, Void, ArrayList<A
         super.onPostExecute(result);
 
         if (listener != null) {
-            listener.onTaskComplete(result);
+            listener.onDataReady(result);
         }
     }
 }

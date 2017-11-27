@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * Created by Goran on 17.11.2017..
  */
 
-public class DataInteractor implements Interactor, NetworkTask.Listener {
+public class DataInteractor implements Interactor {
 
     private DatabaseHelper dbHelper;
     private SharedPrefsHelper spHelper;
@@ -22,10 +22,8 @@ public class DataInteractor implements Interactor, NetworkTask.Listener {
     public DataInteractor(Context context) {
         this.dbHelper = DatabaseHelper.getInstance(context);
         this.spHelper = SharedPrefsHelper.getInstance(context);
-        networkTask = new NetworkTask(DataInteractor.this);
-    }
 
-    private Listener listener;
+    }
 
     @Override
     public void cancelRemoteDataTask() {
@@ -33,18 +31,25 @@ public class DataInteractor implements Interactor, NetworkTask.Listener {
         if (networkTask.getStatus() != AsyncTask.Status.FINISHED) {
             networkTask.cancel(true);
         }
-        this.listener = null;
     }
-
-    public interface Listener {
-        void onRemoteDataReady(ArrayList<Article> articles);
-    }
-
 
     @Override
-    public void getRemoteData(DataInteractor.Listener listener) {
+    public ArrayList<Article> getData(NetworkTask.Listener listener) {
 
-        this.listener = listener;
+        if (timeToUpdate()) {
+
+            networkTask = new NetworkTask(listener);
+            getRemoteData();
+            return null;
+
+        } else {
+
+            return getLocalData();
+        }
+    }
+
+    @Override
+    public void getRemoteData() {
 
         ArrayList<Article> articles = new ArrayList<>();
 
@@ -63,12 +68,6 @@ public class DataInteractor implements Interactor, NetworkTask.Listener {
         dbHelper.clearDatabase();
         dbHelper.insertArticles(articles);
         spHelper.setLastUpdateTime();
-    }
-
-    @Override
-    public void onTaskComplete(ArrayList<Article> articles) {
-
-        listener.onRemoteDataReady(articles);
     }
 
     @Override
