@@ -16,6 +16,8 @@ public interface Interactor {
 
     interface DataListener {
 
-        void onDataReady(ArrayList<Article> articles);
+        void onDataSuccess(ArrayList<Article> articles);
+
+        void onDataError();
     }
 }

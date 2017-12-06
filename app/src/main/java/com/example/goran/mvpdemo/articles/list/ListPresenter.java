@@ -27,16 +27,15 @@ public class ListPresenter implements ListContract.Presenter, Interactor.DataLis
     }
 
     @Override
-    public void onDataReady(ArrayList<Article> articles) {
+    public void onDataSuccess(ArrayList<Article> articles) {
 
-        if (articles != null) {
+        view.updateArticles(articles);
+    }
 
-            view.updateArticles(articles);
+    @Override
+    public void onDataError() {
 
-        } else {
-
-            view.showErrorDialog();
-        }
+        view.showErrorDialog();
     }
 
     @Override

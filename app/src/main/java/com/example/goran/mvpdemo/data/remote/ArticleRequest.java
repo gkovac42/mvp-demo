@@ -24,7 +24,6 @@ public class ArticleRequest {
     public static Observable<ArticleResponse> getObservable() {
 
         // set up cache and request
-
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(chain -> {
                     Request request = chain.request();
@@ -44,7 +43,7 @@ public class ArticleRequest {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
-        // return call
+        // return observable
         return retrofit
                 .create(NewsApi.class)
                 .getArticleInfo(API_KEY, SORT_BY, SOURCE);

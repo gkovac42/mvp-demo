@@ -5,11 +5,11 @@ import android.content.Context;
 import com.example.goran.mvpdemo.data.local.DatabaseHelper;
 import com.example.goran.mvpdemo.data.local.SharedPrefsHelper;
 import com.example.goran.mvpdemo.data.remote.ArticleRequest;
-import com.example.goran.mvpdemo.data.remote.ArticleResponse;
 import com.example.goran.mvpdemo.data.remote.ContentParser;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -22,7 +22,7 @@ public class DataInteractor implements Interactor {
     private SharedPrefsHelper spHelper;
     private DataListener listener;
 
-    private Observable<ArticleResponse> dataObservable;
+    private Disposable dataDisposable;
 
 
     public DataInteractor(Context context) {
@@ -37,53 +37,50 @@ public class DataInteractor implements Interactor {
 
         if (timeToUpdate()) {
 
-            dataObservable = getRemoteObservable();
+            dataDisposable = getRemoteData();
 
         } else {
 
-            dataObservable = getLocalObservable();
-
+            dataDisposable = getLocalData();
         }
     }
 
-    private Observable<ArticleResponse> getRemoteObservable() {
+    private Disposable getRemoteData() {
 
-        Observable<ArticleResponse> dataObservable = ArticleRequest.getObservable();
+        return ArticleRequest.getObservable()
+                .flatMap(articleResponse -> {
 
-        dataObservable.flatMap(articleResponse -> {
-
-            articleResponse.setArticles(ContentParser.parse(articleResponse.getArticles()));
-
-            return Observable.just(articleResponse);
-        })
-                .subscribeOn(Schedulers.newThread())
+                    articleResponse.setArticles(ContentParser.parse(articleResponse.getArticles()));
+                    return Observable.just(articleResponse);
+                })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(articleResponse -> {
+                .subscribe(
 
-                    dbHelper.clearDatabase();
-                    dbHelper.insertArticles(articleResponse.getArticles());
-                    spHelper.setLastUpdateTime();
-
-                    listener.onDataReady(articleResponse.getArticles());
-                });
-
-        return dataObservable;
+                        articleResponse -> {
+                            dbHelper.clearDatabase();
+                            dbHelper.insertArticles(articleResponse.getArticles());
+                            spHelper.setLastUpdateTime();
+                            listener.onDataSuccess(articleResponse.getArticles());
+                        },
+                        throwable -> listener.onDataError());
     }
 
-    private Observable<ArticleResponse> getLocalObservable() {
+    private Disposable getLocalData() {
 
-        Observable<ArticleResponse> dataObservable = Observable.just(dbHelper.getArticles());
-
-        dataObservable.subscribeOn(Schedulers.io())
+        return Observable.just(dbHelper.getArticles())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(articleResponse -> listener.onDataReady(articleResponse.getArticles()));
+                .subscribe(
 
-        return dataObservable;
+                        articleResponse -> listener.onDataSuccess(articleResponse.getArticles()),
+
+                        throwable -> listener.onDataError());
     }
 
     @Override
     public void dispose() {
-
+        dataDisposable.dispose();
     }
 
     @Override

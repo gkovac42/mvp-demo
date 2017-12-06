@@ -27,11 +27,16 @@ public class ArticlePresenter implements ArticleContract.Presenter, Interactor.D
     }
 
     @Override
-    public void onDataReady(ArrayList<Article> articles) {
+    public void onDataSuccess(ArrayList<Article> articles) {
 
         this.articles = articles;
 
         view.updateArticles(articles);
+    }
+
+    @Override
+    public void onDataError() {
+
     }
 
     @Override
