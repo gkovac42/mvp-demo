@@ -47,6 +47,7 @@ public class ListPresenter implements ListContract.Presenter, Interactor.DataLis
 
     @Override
     public void onDestroyPresenter() {
-        dataInteractor.cancelDataTask();
+
+        dataInteractor.dispose();
     }
 }

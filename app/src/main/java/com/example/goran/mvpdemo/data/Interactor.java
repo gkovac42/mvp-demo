@@ -10,7 +10,7 @@ public interface Interactor {
 
     void getData(DataListener listener);
 
-    void cancelDataTask();
+    void dispose();
 
     boolean timeToUpdate();
 

@@ -1,12 +1,10 @@
 package com.example.goran.mvpdemo.data.remote;
 
-import java.io.IOException;
-
-import okhttp3.Interceptor;
+import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -23,21 +21,18 @@ public class ArticleRequest {
     private static final int CACHE_DURATION = 300; // 5min
 
 
-    public static Call<ArticleResponse> initApiCall() {
+    public static Observable<ArticleResponse> getObservable() {
 
         // set up cache and request
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public okhttp3.Response intercept(Chain chain) throws IOException {
-                        Request request = chain.request();
-                        request = request.newBuilder()
-                                .header("Cache-control", "public, max-age=" + CACHE_DURATION)
-                                .build();
+                .addInterceptor(chain -> {
+                    Request request = chain.request();
+                    request = request.newBuilder()
+                            .header("Cache-control", "public, max-age=" + CACHE_DURATION)
+                            .build();
 
-                        return chain.proceed(request);
-                    }
+                    return chain.proceed(request);
                 })
                 .build();
 
@@ -46,6 +41,7 @@ public class ArticleRequest {
                 .baseUrl(BASE_URL)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
         // return call

@@ -1,14 +1,16 @@
 package com.example.goran.mvpdemo.data;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.example.goran.mvpdemo.data.local.DatabaseHelper;
-import com.example.goran.mvpdemo.data.local.LocalTask;
 import com.example.goran.mvpdemo.data.local.SharedPrefsHelper;
-import com.example.goran.mvpdemo.data.remote.RemoteTask;
+import com.example.goran.mvpdemo.data.remote.ArticleRequest;
+import com.example.goran.mvpdemo.data.remote.ArticleResponse;
+import com.example.goran.mvpdemo.data.remote.ContentParser;
 
-import java.util.ArrayList;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Goran on 17.11.2017..
@@ -18,62 +20,70 @@ public class DataInteractor implements Interactor {
 
     private DatabaseHelper dbHelper;
     private SharedPrefsHelper spHelper;
-    private LocalTask localTask;
-    private RemoteTask remoteTask;
+    private DataListener listener;
+
+    private Observable<ArticleResponse> dataObservable;
+
 
     public DataInteractor(Context context) {
         this.dbHelper = DatabaseHelper.getInstance(context);
         this.spHelper = SharedPrefsHelper.getInstance(context);
-
     }
 
     @Override
     public void getData(DataListener listener) {
 
+        this.listener = listener;
+
         if (timeToUpdate()) {
 
-            remoteTask = new RemoteTask(dbHelper, listener);
-            spHelper.setLastUpdateTime();
-            getRemoteData();
+            dataObservable = getRemoteObservable();
 
         } else {
-            localTask = new LocalTask(dbHelper, listener);
-            getLocalData();
+
+            dataObservable = getLocalObservable();
+
         }
     }
 
-    private void getRemoteData() {
+    private Observable<ArticleResponse> getRemoteObservable() {
 
-        ArrayList<Article> articles = new ArrayList<>();
+        Observable<ArticleResponse> dataObservable = ArticleRequest.getObservable();
 
-        remoteTask.execute(articles);
+        dataObservable.flatMap(articleResponse -> {
+
+            articleResponse.setArticles(ContentParser.parse(articleResponse.getArticles()));
+
+            return Observable.just(articleResponse);
+        })
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(articleResponse -> {
+
+                    dbHelper.clearDatabase();
+                    dbHelper.insertArticles(articleResponse.getArticles());
+                    spHelper.setLastUpdateTime();
+
+                    listener.onDataReady(articleResponse.getArticles());
+                });
+
+        return dataObservable;
     }
 
-    private void getLocalData() {
+    private Observable<ArticleResponse> getLocalObservable() {
 
-        ArrayList<Article> articles = new ArrayList<>();
+        Observable<ArticleResponse> dataObservable = Observable.just(dbHelper.getArticles());
 
-        localTask.execute(articles);
+        dataObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(articleResponse -> listener.onDataReady(articleResponse.getArticles()));
 
+        return dataObservable;
     }
 
     @Override
-    public void cancelDataTask() {
+    public void dispose() {
 
-        if (remoteTask != null) {
-            remoteTask.removeListener();
-
-            if (remoteTask.getStatus() != AsyncTask.Status.FINISHED) {
-                remoteTask.cancel(true);
-            }
-
-        } else if (localTask != null) {
-            localTask.removeListener();
-
-            if (localTask.getStatus() != AsyncTask.Status.FINISHED) {
-                localTask.cancel(true);
-            }
-        }
     }
 
     @Override
