@@ -51,18 +51,20 @@ public class DataInteractor implements Interactor {
                 .flatMap(articleResponse -> {
 
                     articleResponse.setArticles(ContentParser.parse(articleResponse.getArticles()));
-                    return Observable.just(articleResponse);
+                    return Observable.just(articleResponse.getArticles());
                 })
+
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
 
-                        articleResponse -> {
+                        articles -> {
                             dbHelper.clearDatabase();
-                            dbHelper.insertArticles(articleResponse.getArticles());
+                            dbHelper.insertArticles(articles);
                             spHelper.setLastUpdateTime();
-                            listener.onDataSuccess(articleResponse.getArticles());
+                            listener.onDataSuccess(articles);
                         },
+
                         throwable -> listener.onDataError());
     }
 
@@ -73,7 +75,7 @@ public class DataInteractor implements Interactor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
 
-                        articleResponse -> listener.onDataSuccess(articleResponse.getArticles()),
+                        articles -> listener.onDataSuccess(articles),
 
                         throwable -> listener.onDataError());
     }

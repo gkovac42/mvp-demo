@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.goran.mvpdemo.data.Article;
-import com.example.goran.mvpdemo.data.remote.ArticleResponse;
 
 import java.util.ArrayList;
 
@@ -57,11 +56,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // get all articles from database
-    public ArticleResponse getArticles() {
+    public ArrayList<Article> getArticles() {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        ArticleResponse articleResponse = new ArticleResponse();
-        articleResponse.setArticles(new ArrayList<>());
+        ArrayList<Article> articles = new ArrayList<>();
         Article article;
 
         Cursor cursor = db.query(
@@ -78,13 +76,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             article.setUrlToImage(cursor.getString(2));
             article.setContent(cursor.getString(3));
 
-            articleResponse.getArticles().add(article);
+            articles.add(article);
 
             cursor.moveToNext();
         }
         cursor.close();
         db.close();
-        return articleResponse;
+        return articles;
     }
 
     // remove all articles from database
