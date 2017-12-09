@@ -14,6 +14,8 @@ import com.example.goran.mvpdemo.articles.single.ArticleActivity;
 import com.example.goran.mvpdemo.data.Article;
 import com.example.goran.mvpdemo.data.DataInteractor;
 import com.example.goran.mvpdemo.data.Interactor;
+import com.example.goran.mvpdemo.data.local.DatabaseHelper;
+import com.example.goran.mvpdemo.data.local.SharedPrefsHelper;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
@@ -32,7 +34,9 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
         initUI();
 
-        Interactor dataInteractor = new DataInteractor(getApplicationContext());
+        Interactor dataInteractor = new DataInteractor(
+                DatabaseHelper.getInstance(getApplicationContext()),
+                SharedPrefsHelper.getInstance(getApplicationContext()));
 
         presenter = new ListPresenter(this, dataInteractor);
 
@@ -45,12 +49,7 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
         progressBar = findViewById(R.id.main_progress_bar);
 
         adapter = new ListAdapter();
-        adapter.setListener(new ListAdapter.ItemClickListener() {
-            @Override
-            public void onClick(int position) {
-                presenter.onArticleClick(position);
-            }
-        });
+        adapter.setListener(position -> presenter.onArticleClick(position));
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setAdapter(adapter);

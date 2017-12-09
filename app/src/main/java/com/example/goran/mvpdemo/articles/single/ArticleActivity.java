@@ -10,6 +10,8 @@ import com.example.goran.mvpdemo.R;
 import com.example.goran.mvpdemo.data.Article;
 import com.example.goran.mvpdemo.data.DataInteractor;
 import com.example.goran.mvpdemo.data.Interactor;
+import com.example.goran.mvpdemo.data.local.DatabaseHelper;
+import com.example.goran.mvpdemo.data.local.SharedPrefsHelper;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
@@ -31,7 +33,9 @@ public class ArticleActivity extends AppCompatActivity implements ArticleContrac
 
         initUI();
 
-        Interactor dataInteractor = new DataInteractor(getApplicationContext());
+        Interactor dataInteractor = new DataInteractor(
+                DatabaseHelper.getInstance(getApplicationContext()),
+                SharedPrefsHelper.getInstance(getApplicationContext()));
 
         presenter = new ArticlePresenter(this, dataInteractor);
 

@@ -1,6 +1,5 @@
 package com.example.goran.mvpdemo.data;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.example.goran.mvpdemo.data.local.DatabaseHelper;
@@ -26,10 +25,10 @@ public class DataInteractor implements Interactor {
     private CompositeDisposable compositeDisposable;
 
 
-    public DataInteractor(Context context) {
-        this.dbHelper = DatabaseHelper.getInstance(context);
-        this.spHelper = SharedPrefsHelper.getInstance(context);
+    public DataInteractor(DatabaseHelper dbHelper, SharedPrefsHelper spHelper) {
         this.compositeDisposable = new CompositeDisposable();
+        this.dbHelper = dbHelper;
+        this.spHelper = spHelper;
     }
 
     @Override
@@ -51,6 +50,7 @@ public class DataInteractor implements Interactor {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
+
                         articles -> listener.onDataSuccess(articles),
 
                         throwable -> listener.onDataError(),
@@ -58,7 +58,6 @@ public class DataInteractor implements Interactor {
                         () -> Log.i("M", "Complete"),
 
                         disposable -> compositeDisposable.add(disposable));
-
     }
 
     private Observable<ArrayList<Article>> getRemoteData() {
