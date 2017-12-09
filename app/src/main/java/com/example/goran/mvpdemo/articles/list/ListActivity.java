@@ -36,7 +36,8 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
         Interactor dataInteractor = new DataInteractor(
                 DatabaseHelper.getInstance(getApplicationContext()),
-                SharedPrefsHelper.getInstance(getApplicationContext()));
+                SharedPrefsHelper.getInstance(getApplicationContext()),
+                this);
 
         presenter = new ListPresenter(this, dataInteractor);
 

@@ -1,5 +1,9 @@
 package com.example.goran.mvpdemo.data;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.util.Log;
 
 import com.example.goran.mvpdemo.data.local.DatabaseHelper;
@@ -18,17 +22,20 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Goran on 17.11.2017..
  */
 
-public class DataInteractor implements Interactor {
+public class DataInteractor implements Interactor, LifecycleObserver {
 
     private DatabaseHelper dbHelper;
     private SharedPrefsHelper spHelper;
     private CompositeDisposable compositeDisposable;
+    private Lifecycle lifecycle;
 
 
-    public DataInteractor(DatabaseHelper dbHelper, SharedPrefsHelper spHelper) {
+    public DataInteractor(DatabaseHelper dbHelper, SharedPrefsHelper spHelper, LifecycleOwner lifecycleOwner) {
         this.compositeDisposable = new CompositeDisposable();
         this.dbHelper = dbHelper;
         this.spHelper = spHelper;
+        this.lifecycle = lifecycleOwner.getLifecycle();
+        this.lifecycle.addObserver(this);
     }
 
     @Override
@@ -44,7 +51,6 @@ public class DataInteractor implements Interactor {
 
             dataObservable = getLocalData();
         }
-
 
         dataObservable
                 .subscribeOn(Schedulers.io())
@@ -88,6 +94,13 @@ public class DataInteractor implements Interactor {
     @Override
     public boolean timeToUpdate() {
         return spHelper.timeToUpdate();
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    private void onDestroy() {
+        Log.i("ON DESTROY", "ON DESTROY!!!!!");
+        compositeDisposable.dispose();
+
     }
 }
 
