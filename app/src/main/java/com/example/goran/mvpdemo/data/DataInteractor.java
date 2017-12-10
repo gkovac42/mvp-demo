@@ -27,15 +27,15 @@ public class DataInteractor implements Interactor, LifecycleObserver {
     private DatabaseHelper dbHelper;
     private SharedPrefsHelper spHelper;
     private CompositeDisposable compositeDisposable;
-    private Lifecycle lifecycle;
 
 
     public DataInteractor(DatabaseHelper dbHelper, SharedPrefsHelper spHelper, LifecycleOwner lifecycleOwner) {
         this.compositeDisposable = new CompositeDisposable();
         this.dbHelper = dbHelper;
         this.spHelper = spHelper;
-        this.lifecycle = lifecycleOwner.getLifecycle();
-        this.lifecycle.addObserver(this);
+
+        Lifecycle lifecycle = lifecycleOwner.getLifecycle();
+        lifecycle.addObserver(this);
     }
 
     @Override
@@ -87,20 +87,15 @@ public class DataInteractor implements Interactor, LifecycleObserver {
     }
 
     @Override
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void dispose() {
         compositeDisposable.dispose();
+        Log.i("MSG", "onDestroy");
     }
 
     @Override
     public boolean timeToUpdate() {
         return spHelper.timeToUpdate();
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    private void onDestroy() {
-        Log.i("ON DESTROY", "ON DESTROY!!!!!");
-        compositeDisposable.dispose();
-
     }
 }
 

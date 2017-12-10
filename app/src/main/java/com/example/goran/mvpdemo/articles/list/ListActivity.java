@@ -85,7 +85,7 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
     @Override
     protected void onDestroy() {
-        presenter.onDestroyPresenter();
+        
         super.onDestroy();
     }
 }
