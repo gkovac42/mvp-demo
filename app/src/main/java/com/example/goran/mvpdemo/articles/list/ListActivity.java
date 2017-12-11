@@ -82,10 +82,4 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
         progressBar.setVisibility(View.GONE);
     }
-
-    @Override
-    protected void onDestroy() {
-        
-        super.onDestroy();
-    }
 }
