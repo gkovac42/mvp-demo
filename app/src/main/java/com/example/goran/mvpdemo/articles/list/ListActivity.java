@@ -2,25 +2,20 @@ package com.example.goran.mvpdemo.articles.list;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.example.goran.mvpdemo.R;
+import com.example.goran.mvpdemo.articles.BaseActivity;
 import com.example.goran.mvpdemo.articles.dialog.ErrorDialogFragment;
 import com.example.goran.mvpdemo.articles.single.ArticleActivity;
 import com.example.goran.mvpdemo.data.Article;
-import com.example.goran.mvpdemo.data.DataInteractor;
-import com.example.goran.mvpdemo.data.Interactor;
-import com.example.goran.mvpdemo.data.local.DatabaseHelper;
-import com.example.goran.mvpdemo.data.local.SharedPrefsHelper;
-import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
 
-public class ListActivity extends AppCompatActivity implements ListContract.View {
+public class ListActivity extends BaseActivity implements ListContract.View {
 
     private ProgressBar progressBar;
     private ListAdapter adapter;
@@ -29,17 +24,11 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fresco.initialize(this);
         setContentView(R.layout.activity_main);
 
         initUI();
 
-        Interactor dataInteractor = new DataInteractor(
-                DatabaseHelper.getInstance(getApplicationContext()),
-                SharedPrefsHelper.getInstance(getApplicationContext()),
-                this);
-
-        presenter = new ListPresenter(this, dataInteractor);
+        presenter = new ListPresenter(this, getDataInteractor());
 
         presenter.getArticleData();
     }

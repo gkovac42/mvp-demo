@@ -2,7 +2,6 @@ package com.example.goran.mvpdemo.data;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.util.Log;
 
@@ -29,13 +28,11 @@ public class DataInteractor implements Interactor, LifecycleObserver {
     private CompositeDisposable compositeDisposable;
 
 
-    public DataInteractor(DatabaseHelper dbHelper, SharedPrefsHelper spHelper, LifecycleOwner lifecycleOwner) {
+    public DataInteractor(DatabaseHelper dbHelper, SharedPrefsHelper spHelper) {
         this.compositeDisposable = new CompositeDisposable();
         this.dbHelper = dbHelper;
         this.spHelper = spHelper;
 
-        Lifecycle lifecycle = lifecycleOwner.getLifecycle();
-        lifecycle.addObserver(this);
     }
 
     @Override

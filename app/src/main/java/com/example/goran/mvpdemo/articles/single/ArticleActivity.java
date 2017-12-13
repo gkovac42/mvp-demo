@@ -4,41 +4,29 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 
 import com.example.goran.mvpdemo.R;
+import com.example.goran.mvpdemo.articles.BaseActivity;
 import com.example.goran.mvpdemo.data.Article;
-import com.example.goran.mvpdemo.data.DataInteractor;
-import com.example.goran.mvpdemo.data.Interactor;
-import com.example.goran.mvpdemo.data.local.DatabaseHelper;
-import com.example.goran.mvpdemo.data.local.SharedPrefsHelper;
-import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
 
 
-public class ArticleActivity extends AppCompatActivity implements ArticleContract.View, ViewPager.OnPageChangeListener {
+public class ArticleActivity extends BaseActivity implements ArticleContract.View, ViewPager.OnPageChangeListener {
 
     private ActionBar actionBar;
     private ArticlePagerAdapter adapter;
     private ViewPager viewPager;
     private ArticleContract.Presenter presenter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fresco.initialize(this);
         setContentView(R.layout.activity_reader);
 
         initUI();
 
-        Interactor dataInteractor = new DataInteractor(
-                DatabaseHelper.getInstance(getApplicationContext()),
-                SharedPrefsHelper.getInstance(getApplicationContext()),
-                this);
-
-        presenter = new ArticlePresenter(this, dataInteractor);
+        presenter = new ArticlePresenter(this, getDataInteractor());
 
         presenter.getArticleData();
 
