@@ -5,6 +5,8 @@ import com.example.goran.mvpdemo.data.Interactor;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 /**
  * Created by Goran on 17.11.2017..
  */
@@ -15,6 +17,7 @@ public class ArticlePresenter implements ArticleContract.Presenter, Interactor.D
     private Interactor dataInteractor;
     private ArrayList<Article> articles;
 
+    @Inject
     public ArticlePresenter(ArticleContract.View view, Interactor interactor) {
         this.view = view;
         this.dataInteractor = interactor;

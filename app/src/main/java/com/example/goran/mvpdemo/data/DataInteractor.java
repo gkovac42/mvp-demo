@@ -7,10 +7,13 @@ import android.util.Log;
 
 import com.example.goran.mvpdemo.data.local.DatabaseHelper;
 import com.example.goran.mvpdemo.data.local.SharedPrefsHelper;
-import com.example.goran.mvpdemo.data.remote.ArticleRequest;
+import com.example.goran.mvpdemo.data.remote.ApiHelper;
 import com.example.goran.mvpdemo.data.remote.ContentParser;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -21,18 +24,20 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Goran on 17.11.2017..
  */
 
+@Singleton
 public class DataInteractor implements Interactor, LifecycleObserver {
 
     private DatabaseHelper dbHelper;
     private SharedPrefsHelper spHelper;
+    private ApiHelper apiHelper;
     private CompositeDisposable compositeDisposable;
 
-
-    public DataInteractor(DatabaseHelper dbHelper, SharedPrefsHelper spHelper) {
-        this.compositeDisposable = new CompositeDisposable();
+    @Inject
+    public DataInteractor(DatabaseHelper dbHelper, SharedPrefsHelper spHelper, ApiHelper apiHelper) {
         this.dbHelper = dbHelper;
         this.spHelper = spHelper;
-
+        this.apiHelper = apiHelper;
+        this.compositeDisposable = new CompositeDisposable();
     }
 
     @Override
@@ -58,14 +63,14 @@ public class DataInteractor implements Interactor, LifecycleObserver {
 
                         throwable -> listener.onDataError(),
 
-                        () -> Log.i("M", "Complete"),
+                        () -> Log.i("MSG", "Complete"),
 
                         disposable -> compositeDisposable.add(disposable));
     }
 
     private Observable<ArrayList<Article>> getRemoteData() {
 
-        return ArticleRequest.getObservable()
+        return apiHelper.getDataObservable()
                 .flatMap(articleResponse -> {
 
                     articleResponse.setArticles(ContentParser.parse(articleResponse.getArticles()));
@@ -87,7 +92,7 @@ public class DataInteractor implements Interactor, LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void dispose() {
         compositeDisposable.dispose();
-        Log.i("MSG", "onDestroy");
+        Log.i("MSG", "Destroyed");
     }
 
     @Override

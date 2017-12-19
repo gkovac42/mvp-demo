@@ -1,14 +1,12 @@
 package com.example.goran.mvpdemo.data;
 
-import android.arch.lifecycle.LifecycleObserver;
-
 import java.util.ArrayList;
 
 /**
  * Created by Goran on 20.11.2017..
  */
 
-public interface Interactor extends LifecycleObserver {
+public interface Interactor {
 
     void getData(DataListener listener);
 

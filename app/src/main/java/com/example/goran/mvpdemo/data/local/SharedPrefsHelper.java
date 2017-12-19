@@ -5,24 +5,20 @@ import android.content.SharedPreferences;
 
 import java.util.Calendar;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by Goran on 21.11.2017..
  */
 
+@Singleton
 public class SharedPrefsHelper {
-
-    private static SharedPrefsHelper instance = null;
 
     private SharedPreferences prefs;
 
-    public static SharedPrefsHelper getInstance(Context context) {
-        if (instance == null) {
-            instance = new SharedPrefsHelper(context.getApplicationContext());
-        }
-        return instance;
-    }
-
-    private SharedPrefsHelper(Context context) {
+    @Inject
+    public SharedPrefsHelper(Context context) {
         prefs = context
                 .getApplicationContext()
                 .getSharedPreferences("factory", Context.MODE_PRIVATE);

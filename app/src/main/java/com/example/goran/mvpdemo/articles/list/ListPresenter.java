@@ -5,6 +5,8 @@ import com.example.goran.mvpdemo.data.Interactor;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 /**
  * Created by Goran on 17.11.2017..
  */
@@ -14,6 +16,7 @@ public class ListPresenter implements ListContract.Presenter, Interactor.DataLis
     private ListContract.View view;
     private Interactor dataInteractor;
 
+    @Inject
     public ListPresenter(ListContract.View view, Interactor interactor) {
         this.view = view;
         this.dataInteractor = interactor;

@@ -4,29 +4,50 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 
+import com.example.goran.mvpdemo.MyApp;
 import com.example.goran.mvpdemo.R;
-import com.example.goran.mvpdemo.articles.BaseActivity;
+import com.example.goran.mvpdemo.dagger.ArticleActivityComponent;
+import com.example.goran.mvpdemo.dagger.ArticleActivityModule;
+import com.example.goran.mvpdemo.dagger.DaggerArticleActivityComponent;
 import com.example.goran.mvpdemo.data.Article;
+import com.example.goran.mvpdemo.data.DataInteractor;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
 
-public class ArticleActivity extends BaseActivity implements ArticleContract.View, ViewPager.OnPageChangeListener {
+
+public class ArticleActivity extends AppCompatActivity implements ArticleContract.View, ViewPager.OnPageChangeListener {
 
     private ActionBar actionBar;
     private ArticlePagerAdapter adapter;
     private ViewPager viewPager;
-    private ArticleContract.Presenter presenter;
+
+    @Inject
+    ArticleContract.Presenter presenter;
+
+    @Inject
+    DataInteractor interactor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         setContentView(R.layout.activity_reader);
 
         initUI();
 
-        presenter = new ArticlePresenter(this, getDataInteractor());
+        ArticleActivityComponent component = DaggerArticleActivityComponent.builder()
+                .appComponent(((MyApp) getApplication()).getAppComponent())
+                .articleActivityModule(new ArticleActivityModule(this))
+                .build();
+
+        component.inject(this);
+
+        presenter = new ArticlePresenter(this, interactor);
 
         presenter.getArticleData();
 

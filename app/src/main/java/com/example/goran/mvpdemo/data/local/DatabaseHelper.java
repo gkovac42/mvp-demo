@@ -10,10 +10,14 @@ import com.example.goran.mvpdemo.data.Article;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Created by Goran on 21.11.2017..
  */
 
+@Singleton
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "factory_news_db";
@@ -24,17 +28,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String CONTENT_COLUMN = "content";
     public static int DB_VERSION = 1;
 
-    private static DatabaseHelper instance = null;
-
-    // singleton to ensure a single instance of DatabaseHelper object
-    public static DatabaseHelper getInstance(Context context) {
-        if (instance == null) {
-            instance = new DatabaseHelper(context.getApplicationContext());
-        }
-        return instance;
-    }
-
-    private DatabaseHelper(Context context) {
+    @Inject
+    public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
 
     }
