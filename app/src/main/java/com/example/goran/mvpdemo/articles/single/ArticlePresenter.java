@@ -14,8 +14,8 @@ import javax.inject.Inject;
 public class ArticlePresenter implements ArticleContract.Presenter, Interactor.DataListener {
 
     private ArticleContract.View view;
-    private Interactor dataInteractor;
     private ArrayList<Article> articles;
+    private Interactor dataInteractor;
 
     @Inject
     public ArticlePresenter(ArticleContract.View view, Interactor interactor) {

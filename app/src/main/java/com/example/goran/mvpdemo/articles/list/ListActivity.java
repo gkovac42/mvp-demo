@@ -16,7 +16,6 @@ import com.example.goran.mvpdemo.dagger.DaggerListActivityComponent;
 import com.example.goran.mvpdemo.dagger.ListActivityComponent;
 import com.example.goran.mvpdemo.dagger.ListActivityModule;
 import com.example.goran.mvpdemo.data.Article;
-import com.example.goran.mvpdemo.data.DataInteractor;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
@@ -30,9 +29,6 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
     @Inject
     ListContract.Presenter presenter;
-
-    @Inject
-    DataInteractor interactor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +44,6 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
                 .build();
 
         component.inject(this);
-
-        presenter = new ListPresenter(this, interactor);
 
         presenter.getArticleData();
     }

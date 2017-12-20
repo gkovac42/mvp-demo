@@ -12,7 +12,6 @@ import com.example.goran.mvpdemo.dagger.ArticleActivityComponent;
 import com.example.goran.mvpdemo.dagger.ArticleActivityModule;
 import com.example.goran.mvpdemo.dagger.DaggerArticleActivityComponent;
 import com.example.goran.mvpdemo.data.Article;
-import com.example.goran.mvpdemo.data.DataInteractor;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
@@ -29,9 +28,6 @@ public class ArticleActivity extends AppCompatActivity implements ArticleContrac
     @Inject
     ArticleContract.Presenter presenter;
 
-    @Inject
-    DataInteractor interactor;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +42,6 @@ public class ArticleActivity extends AppCompatActivity implements ArticleContrac
                 .build();
 
         component.inject(this);
-
-        presenter = new ArticlePresenter(this, interactor);
 
         presenter.getArticleData();
 
