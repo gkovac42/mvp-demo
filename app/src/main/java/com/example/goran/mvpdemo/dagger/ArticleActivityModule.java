@@ -43,5 +43,4 @@ public class ArticleActivityModule {
     Interactor provideInteractor(DatabaseHelper databaseHelper, SharedPrefsHelper sharedPrefsHelper, ApiHelper apiHelper) {
         return new DataInteractor(databaseHelper, sharedPrefsHelper, apiHelper);
     }
-
 }

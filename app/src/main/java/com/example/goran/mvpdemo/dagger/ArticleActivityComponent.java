@@ -1,7 +1,6 @@
 package com.example.goran.mvpdemo.dagger;
 
 import com.example.goran.mvpdemo.articles.single.ArticleActivity;
-import com.example.goran.mvpdemo.articles.single.ArticlePresenter;
 
 import dagger.Component;
 
@@ -15,5 +14,4 @@ public interface ArticleActivityComponent {
 
     void inject(ArticleActivity articleActivity);
 
-    ArticlePresenter presenter();
 }

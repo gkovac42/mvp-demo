@@ -1,7 +1,6 @@
 package com.example.goran.mvpdemo.dagger;
 
 import com.example.goran.mvpdemo.MyApp;
-import com.example.goran.mvpdemo.data.DataInteractor;
 import com.example.goran.mvpdemo.data.local.DatabaseHelper;
 import com.example.goran.mvpdemo.data.local.SharedPrefsHelper;
 import com.example.goran.mvpdemo.data.remote.ApiHelper;
@@ -19,8 +18,6 @@ import dagger.Component;
 public interface AppComponent {
 
     void inject(MyApp myApp);
-
-    DataInteractor interactor();
 
     SharedPrefsHelper sharedPrefsHelper();
 

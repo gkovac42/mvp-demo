@@ -20,12 +20,13 @@ public class ContentParser {
 
     public static ArrayList<Article> parse(ArrayList<Article> articles) {
 
+        OkHttpClient client = new OkHttpClient();
+
         // parse article content from url
         for (Article article : articles) {
 
             try {
                 // get HTML from URL
-                OkHttpClient client = new OkHttpClient();
                 Request request = new Request.Builder()
                         .url(article.getUrl())
                         .build();
