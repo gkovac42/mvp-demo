@@ -12,8 +12,6 @@ import com.example.goran.mvpdemo.MyApp;
 import com.example.goran.mvpdemo.R;
 import com.example.goran.mvpdemo.articles.dialog.ErrorDialogFragment;
 import com.example.goran.mvpdemo.articles.single.ArticleActivity;
-import com.example.goran.mvpdemo.dagger.DaggerListActivityComponent;
-import com.example.goran.mvpdemo.dagger.ListActivityComponent;
 import com.example.goran.mvpdemo.dagger.ListActivityModule;
 import com.example.goran.mvpdemo.data.Article;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -38,12 +36,9 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
         initUI();
 
-        ListActivityComponent component = DaggerListActivityComponent.builder()
-                .appComponent(((MyApp) getApplication()).getAppComponent())
-                .listActivityModule(new ListActivityModule(this))
-                .build();
-
-        component.inject(this);
+        (((MyApp) getApplication()).getAppComponent())
+                .listActivitySubcomponent(new ListActivityModule(this))
+                .inject(this);
 
         presenter.getArticleData();
     }

@@ -2,16 +2,15 @@ package com.example.goran.mvpdemo.dagger;
 
 import com.example.goran.mvpdemo.articles.list.ListActivity;
 
-import dagger.Component;
+import dagger.Subcomponent;
 
 /**
  * Created by Goran on 19.12.2017..
  */
 
-@Component (dependencies = AppComponent.class, modules = ListActivityModule.class)
+@Subcomponent(modules = ListActivityModule.class)
 @ActivityScope
-public interface ListActivityComponent {
+public interface ListActivitySubcomponent {
 
     void inject(ListActivity listActivity);
-
 }

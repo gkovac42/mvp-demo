@@ -1,5 +1,7 @@
 package com.example.goran.mvpdemo.dagger;
 
+import com.example.goran.mvpdemo.data.remote.NewsApi;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -37,5 +39,11 @@ public class NetworkModule {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    NewsApi provideNewsApi(Retrofit retrofit) {
+        return retrofit.create(NewsApi.class);
     }
 }

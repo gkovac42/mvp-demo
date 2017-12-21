@@ -8,9 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.goran.mvpdemo.MyApp;
 import com.example.goran.mvpdemo.R;
-import com.example.goran.mvpdemo.dagger.ArticleActivityComponent;
 import com.example.goran.mvpdemo.dagger.ArticleActivityModule;
-import com.example.goran.mvpdemo.dagger.DaggerArticleActivityComponent;
 import com.example.goran.mvpdemo.data.Article;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
@@ -36,12 +34,9 @@ public class ArticleActivity extends AppCompatActivity implements ArticleContrac
 
         initUI();
 
-        ArticleActivityComponent component = DaggerArticleActivityComponent.builder()
-                .appComponent(((MyApp) getApplication()).getAppComponent())
-                .articleActivityModule(new ArticleActivityModule(this))
-                .build();
-
-        component.inject(this);
+        (((MyApp) getApplication()).getAppComponent())
+                .articleActivitySubcomponent(new ArticleActivityModule(this))
+                .inject(this);
 
         presenter.getArticleData();
 

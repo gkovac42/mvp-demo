@@ -34,8 +34,8 @@ public class ArticleActivityModule {
 
     @Provides
     @ActivityScope
-    ArticleContract.Presenter providePresenter(ArticleContract.View view, Interactor interactor) {
-        return new ArticlePresenter(view, interactor);
+    ArticleContract.Presenter providePresenter(ArticlePresenter presenter) {
+        return presenter;
     }
 
     @Provides

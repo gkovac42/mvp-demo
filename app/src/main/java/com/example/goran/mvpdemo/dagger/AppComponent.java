@@ -25,5 +25,9 @@ public interface AppComponent {
 
     ApiHelper apiHelper();
 
+    ListActivitySubcomponent listActivitySubcomponent(ListActivityModule listActivityModule);
+
+    ArticleActivitySubcomponent articleActivitySubcomponent(ArticleActivityModule articleActivityModule);
+
 
 }

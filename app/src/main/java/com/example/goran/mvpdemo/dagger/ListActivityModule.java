@@ -34,8 +34,8 @@ public class ListActivityModule {
 
     @Provides
     @ActivityScope
-    ListContract.Presenter providePresenter(ListContract.View view, Interactor interactor) {
-        return new ListPresenter(view, interactor);
+    ListContract.Presenter providePresenter(ListPresenter presenter) {
+        return presenter;
     }
 
     @Provides

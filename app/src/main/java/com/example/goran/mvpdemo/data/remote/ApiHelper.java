@@ -4,7 +4,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.reactivex.Observable;
-import retrofit2.Retrofit;
 
 /**
  * Created by Goran on 8.11.2017..
@@ -18,18 +17,15 @@ public class ApiHelper {
     private static final String SORT_BY = "top";
     private static final String SOURCE = "bbc-news";
 
-    private Retrofit retrofit;
+    private NewsApi newsApi;
 
     @Inject
-    public ApiHelper(Retrofit retrofit) {
-        this.retrofit = retrofit;
+    public ApiHelper(NewsApi newsApi) {
+        this.newsApi = newsApi;
     }
 
     public Observable<ArticleResponse> getDataObservable() {
-
-        return retrofit
-                .create(NewsApi.class)
-                .getArticleInfo(API_KEY, SORT_BY, SOURCE);
+        return  newsApi.getArticleInfo(API_KEY, SORT_BY, SOURCE);
 
     }
 }
