@@ -1,6 +1,5 @@
 package com.example.goran.mvpdemo.articles.list;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,8 +12,7 @@ import com.example.goran.mvpdemo.R;
 import com.example.goran.mvpdemo.articles.dialog.ErrorDialogFragment;
 import com.example.goran.mvpdemo.articles.single.ArticleActivity;
 import com.example.goran.mvpdemo.dagger.ListActivityModule;
-import com.example.goran.mvpdemo.data.Article;
-import com.facebook.drawee.backends.pipeline.Fresco;
+import com.example.goran.mvpdemo.data.model.Article;
 
 import java.util.ArrayList;
 
@@ -31,14 +29,13 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fresco.initialize(this);
         setContentView(R.layout.activity_main);
-
-        initUI();
 
         (((MyApp) getApplication()).getAppComponent())
                 .listActivitySubcomponent(new ListActivityModule(this))
                 .inject(this);
+
+        initUI();
 
         presenter.getArticleData();
     }
@@ -59,26 +56,18 @@ public class ListActivity extends AppCompatActivity implements ListContract.View
 
     @Override
     public void updateArticles(ArrayList<Article> articles) {
-
         adapter.setDataSource(articles);
-
         progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void navigateToArticle(int position) {
-
-        Intent intent = new Intent(ListActivity.this, ArticleActivity.class);
-        intent.putExtra("position", position);
-        startActivity(intent);
+        startActivity(ArticleActivity.newIntent(this, position));
     }
 
     @Override
     public void showErrorDialog() {
-
-        ErrorDialogFragment newFragment = ErrorDialogFragment.newInstance();
-        newFragment.show(getSupportFragmentManager(), null);
-
-        progressBar.setVisibility(View.GONE);
+        ErrorDialogFragment fragment = ErrorDialogFragment.newInstance();
+        fragment.show(getSupportFragmentManager(), null);
     }
 }

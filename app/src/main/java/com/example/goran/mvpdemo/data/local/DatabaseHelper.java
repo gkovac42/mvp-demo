@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.goran.mvpdemo.data.Article;
+import com.example.goran.mvpdemo.data.model.Article;
 
 import java.util.ArrayList;
 
@@ -20,13 +20,13 @@ import javax.inject.Singleton;
 @Singleton
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final String DB_NAME = "factory_news_db";
-    public static final String TABLE_NAME = "articles";
-    public static final String TITLE_COLUMN = "title";
-    public static final String URL_COLUMN = "url";
-    public static final String IMAGE_COLUMN = "image";
-    public static final String CONTENT_COLUMN = "content";
-    public static int DB_VERSION = 1;
+    private static final String DB_NAME = "factory_news_db";
+    private static final String TABLE_NAME = "articles";
+    private static final String TITLE_COLUMN = "title";
+    private static final String URL_COLUMN = "url";
+    private static final String IMAGE_COLUMN = "image";
+    private static final String CONTENT_COLUMN = "content";
+    private static int DB_VERSION = 1;
 
     @Inject
     public DatabaseHelper(Context context) {
@@ -34,7 +34,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    // save selected article to database
     public void insertArticles(ArrayList<Article> articles) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -50,7 +49,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    // get all articles from database
     public ArrayList<Article> getArticles() {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -80,7 +78,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return articles;
     }
 
-    // remove all articles from database
     public void clearDatabase() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, null, null);

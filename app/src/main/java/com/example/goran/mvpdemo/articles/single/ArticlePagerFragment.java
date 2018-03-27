@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.goran.mvpdemo.R;
-import com.example.goran.mvpdemo.data.Article;
+import com.example.goran.mvpdemo.data.model.Article;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 /**
@@ -18,15 +18,12 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 public class ArticlePagerFragment extends Fragment {
 
-    private SimpleDraweeView imgHeader;
-    private TextView txtTitle;
-    private TextView txtContent;
-
-    // new instance to simplify article passing
     public static ArticlePagerFragment newInstance(Article article) {
-        ArticlePagerFragment fragment = new ArticlePagerFragment();
+
         Bundle args = new Bundle();
         args.putParcelable("article", article);
+
+        ArticlePagerFragment fragment = new ArticlePagerFragment();
         fragment.setArguments(args);
 
         return fragment;
@@ -38,9 +35,9 @@ public class ArticlePagerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.item_pager, container,
                 false);
 
-        imgHeader = rootView.findViewById(R.id.img_header);
-        txtTitle = rootView.findViewById(R.id.txt_title);
-        txtContent = rootView.findViewById(R.id.txt_content);
+        SimpleDraweeView imgHeader = rootView.findViewById(R.id.img_header);
+        TextView txtTitle = rootView.findViewById(R.id.txt_title);
+        TextView txtContent = rootView.findViewById(R.id.txt_content);
 
         Article article = getArguments().getParcelable("article");
 

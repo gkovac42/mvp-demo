@@ -1,5 +1,7 @@
 package com.example.goran.mvpdemo.data;
 
+import com.example.goran.mvpdemo.data.model.Article;
+
 import java.util.ArrayList;
 
 /**

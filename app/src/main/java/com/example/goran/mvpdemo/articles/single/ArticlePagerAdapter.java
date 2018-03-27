@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.goran.mvpdemo.data.Article;
+import com.example.goran.mvpdemo.data.model.Article;
 
 import java.util.ArrayList;
 

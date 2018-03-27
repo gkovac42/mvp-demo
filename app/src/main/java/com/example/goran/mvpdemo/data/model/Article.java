@@ -1,4 +1,4 @@
-package com.example.goran.mvpdemo.data;
+package com.example.goran.mvpdemo.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

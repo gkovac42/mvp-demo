@@ -2,7 +2,7 @@ package com.example.goran.mvpdemo.data.remote;
 
 import android.text.Html;
 
-import com.example.goran.mvpdemo.data.Article;
+import com.example.goran.mvpdemo.data.model.Article;
 
 import java.util.ArrayList;
 

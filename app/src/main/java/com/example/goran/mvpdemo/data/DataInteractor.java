@@ -1,5 +1,6 @@
 package com.example.goran.mvpdemo.data;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.OnLifecycleEvent;
@@ -7,6 +8,7 @@ import android.util.Log;
 
 import com.example.goran.mvpdemo.data.local.DatabaseHelper;
 import com.example.goran.mvpdemo.data.local.SharedPrefsHelper;
+import com.example.goran.mvpdemo.data.model.Article;
 import com.example.goran.mvpdemo.data.remote.ApiHelper;
 import com.example.goran.mvpdemo.data.remote.ContentParser;
 
@@ -40,6 +42,7 @@ public class DataInteractor implements Interactor, LifecycleObserver {
         this.compositeDisposable = new CompositeDisposable();
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void getData(DataListener listener) {
 

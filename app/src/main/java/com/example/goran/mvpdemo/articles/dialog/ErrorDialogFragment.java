@@ -1,7 +1,6 @@
 package com.example.goran.mvpdemo.articles.dialog;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -25,14 +24,7 @@ public class ErrorDialogFragment extends DialogFragment {
         return new AlertDialog.Builder(getActivity())
                 .setTitle("Greška")
                 .setMessage("Ups, došlo je do pogreške.")
-                .setPositiveButton("U redu", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dismiss();
-                    }
-                })
-
+                .setPositiveButton("U redu", (dialog, which) -> dismiss())
                 .create();
     }
 }

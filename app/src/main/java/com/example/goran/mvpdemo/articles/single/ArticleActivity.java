@@ -1,16 +1,15 @@
 package com.example.goran.mvpdemo.articles.single;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.goran.mvpdemo.MyApp;
 import com.example.goran.mvpdemo.R;
 import com.example.goran.mvpdemo.dagger.ArticleActivityModule;
-import com.example.goran.mvpdemo.data.Article;
-import com.facebook.drawee.backends.pipeline.Fresco;
+import com.example.goran.mvpdemo.data.model.Article;
 
 import java.util.ArrayList;
 
@@ -19,34 +18,38 @@ import javax.inject.Inject;
 
 public class ArticleActivity extends AppCompatActivity implements ArticleContract.View, ViewPager.OnPageChangeListener {
 
-    private ActionBar actionBar;
+    private static final String EXTRA_POSITION = "position";
+
     private ArticlePagerAdapter adapter;
     private ViewPager viewPager;
 
     @Inject
     ArticleContract.Presenter presenter;
 
+    public static Intent newIntent(Context context, int position) {
+        Intent intent = new Intent(context, ArticleActivity.class);
+        intent.putExtra(EXTRA_POSITION, position);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fresco.initialize(this);
         setContentView(R.layout.activity_reader);
-
-        initUI();
 
         (((MyApp) getApplication()).getAppComponent())
                 .articleActivitySubcomponent(new ArticleActivityModule(this))
                 .inject(this);
+
+        initUI();
 
         presenter.getArticleData();
 
     }
 
     private void initUI() {
-
-        actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         adapter = new ArticlePagerAdapter(getSupportFragmentManager());
@@ -59,20 +62,23 @@ public class ArticleActivity extends AppCompatActivity implements ArticleContrac
 
     @Override
     public void updateArticles(ArrayList<Article> articles) {
-
         adapter.setDataSource(articles);
         adapter.notifyDataSetChanged();
 
-        Intent intent = getIntent();
-        int position = intent.getIntExtra("position", 0);
+        int position = getIntent().getIntExtra(EXTRA_POSITION, 0);
 
-        actionBar.setTitle(articles.get(position).getTitle());
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(articles.get(position).getTitle());
+        }
+
         viewPager.setCurrentItem(position);
     }
 
     @Override
     public void updateTitle(String title) {
-        getSupportActionBar().setTitle(title);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
     }
 
     @Override

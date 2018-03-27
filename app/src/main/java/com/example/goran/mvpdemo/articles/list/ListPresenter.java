@@ -1,6 +1,6 @@
 package com.example.goran.mvpdemo.articles.list;
 
-import com.example.goran.mvpdemo.data.Article;
+import com.example.goran.mvpdemo.data.model.Article;
 import com.example.goran.mvpdemo.data.Interactor;
 
 import java.util.ArrayList;
@@ -25,31 +25,26 @@ public class ListPresenter implements ListContract.Presenter, Interactor.DataLis
 
     @Override
     public void getArticleData() {
-
         dataInteractor.getData(this);
     }
 
     @Override
     public void onDataSuccess(ArrayList<Article> articles) {
-
         view.updateArticles(articles);
     }
 
     @Override
     public void onDataError() {
-
         view.showErrorDialog();
     }
 
     @Override
     public void onArticleClick(int position) {
-
         view.navigateToArticle(position);
     }
 
     @Override
     public void onDestroyPresenter() {
-
         dataInteractor.dispose();
     }
 }

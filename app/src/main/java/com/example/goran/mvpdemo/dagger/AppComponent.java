@@ -29,5 +29,4 @@ public interface AppComponent {
 
     ArticleActivitySubcomponent articleActivitySubcomponent(ArticleActivityModule articleActivityModule);
 
-
 }

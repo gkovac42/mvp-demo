@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.goran.mvpdemo.R;
-import com.example.goran.mvpdemo.data.Article;
+import com.example.goran.mvpdemo.data.model.Article;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
